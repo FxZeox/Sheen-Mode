@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f1e8;
+  --foreground: #172417;
+  --primary: #23452f;
+  --secondary: #6d7f67;
+  --accent: #9b7834;
+  --muted: #5f6c67;
+  --logo-silver: #bcc2c7;
+  --logo-charcoal: #66706f;
+  --logo-gold: #9b7834;
+  --surface: linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(239, 236, 230, 0.72));
+  --surface-strong: #faf6ef;
+  --border: rgba(118, 128, 123, 0.24);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(188, 194, 199, 0.2), transparent 28%),
+    radial-gradient(circle at top left, rgba(156, 122, 55, 0.09), transparent 26%),
+    radial-gradient(circle at top right, rgba(35, 69, 47, 0.09), transparent 28%),
+    linear-gradient(180deg, #faf6ef 0%, #f2ecdf 48%, #f7f1e7 100%);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display), serif;
+}
+
+::selection {
+  background: rgba(155, 120, 52, 0.24);
+}
+
+.glass-panel {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+}
+
+.soft-shadow {
+  box-shadow: 0 20px 60px rgba(31, 53, 37, 0.09), 0 6px 22px rgba(155, 120, 52, 0.09);
+}
+
+.hero-grid {
+  background-image: linear-gradient(rgba(35, 69, 47, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 69, 47, 0.06) 1px, transparent 1px);
+  background-size: 36px 36px;
+}

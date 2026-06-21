@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, CreditCard, MapPin, Phone, Send } from "lucide-react";
+import { CheckCircle2, CreditCard, MapPin, Send } from "lucide-react";
 
 import { Section } from "@/components/section";
 import { useCart } from "@/components/cart-provider";
+import { WhatsAppLogo } from "@/components/social-icons";
 import { calculateTotals, formatCurrency } from "@/lib/cart";
 import { deliveryOptions, paymentMethods } from "@/lib/site-data";
 import { useProductContent } from "@/lib/use-product-content";
@@ -263,7 +264,7 @@ export default function CheckoutPage() {
 
             <div className="mt-6 space-y-4 rounded-[1.5rem] bg-white/80 p-5 text-sm text-[var(--muted)]">
               <p className="flex items-center gap-3 text-[var(--foreground)]"><MapPin className="h-4 w-4 text-[var(--primary)]" /> Delivery method is applied automatically.</p>
-              <p className="flex items-center gap-3 text-[var(--foreground)]"><Phone className="h-4 w-4 text-[var(--primary)]" /> If you pay online, place your order and send the payment on my WhatsApp number.</p>
+              <p className="flex items-center gap-3 text-[var(--foreground)]"><WhatsAppLogo className="h-5 w-5 shrink-0" /> If you pay online, place your order first and then contact us on WhatsApp to get the account number for payment.</p>
               <p className="flex items-center gap-3 text-[var(--foreground)]"><CreditCard className="h-4 w-4 text-[var(--primary)]" /> Supported payment methods are listed in this checkout.</p>
               <p className="flex items-center gap-3 text-[var(--foreground)]"><CheckCircle2 className="h-4 w-4 text-[var(--primary)]" /> Admin can review and update orders from the dashboard.</p>
             </div>

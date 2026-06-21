@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
 
 import { CartProvider } from "@/components/cart-provider";
+import { CelebrationPopup } from "@/components/celebration-popup";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <main>{children}</main>
             <SiteFooter />
             <WhatsAppFloat />
+            <CelebrationPopup />
           </div>
         </CartProvider>
       </body>

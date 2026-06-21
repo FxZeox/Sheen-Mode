@@ -16,7 +16,7 @@ export const brand = {
 
 export const product = {
   name: "Ghanal Hair Oil",
-  price: 2499,
+  price: 1499,
   currency: "PKR",
   size: "200ml",
   sku: "SM-GHO-100",

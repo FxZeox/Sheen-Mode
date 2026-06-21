@@ -79,7 +79,7 @@ export default function CheckoutPage() {
         params.set("trackingId", orderTrackingId.trim().toUpperCase());
       }
 
-      const response = await fetch(`/api/orders?${params.toString()}`, { method: "GET" });
+      const response = await fetch(`/api/orders?${params.toString()}`, { method: "GET", cache: "no-store" });
       const data = (await response.json()) as TrackingResponse;
 
       if (!response.ok || !data.success) {

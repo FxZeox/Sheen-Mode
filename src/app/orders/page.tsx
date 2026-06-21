@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PackageCheck, Phone, RefreshCw, Truck } from "lucide-react";
 
 import { Section } from "@/components/section";
@@ -30,18 +30,26 @@ type OrdersResponse = {
 
 export default function OrdersPage() {
   const [phone, setPhone] = useState("");
+  const [searchedPhone, setSearchedPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [orders, setOrders] = useState<OrderItem[]>([]);
 
-  async function loadOrders(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setStatus("loading");
-    setMessage("");
+  async function loadOrdersByPhone(phoneNumber: string, options?: { silent?: boolean }) {
+    const normalizedPhone = phoneNumber.trim();
+
+    if (!normalizedPhone) {
+      return;
+    }
+
+    if (!options?.silent) {
+      setStatus("loading");
+      setMessage("");
+    }
 
     try {
-      const params = new URLSearchParams({ phone: phone.trim() });
-      const response = await fetch(`/api/orders?${params.toString()}`, { method: "GET" });
+      const params = new URLSearchParams({ phone: normalizedPhone });
+      const response = await fetch(`/api/orders?${params.toString()}`, { method: "GET", cache: "no-store" });
       const data = (await response.json()) as OrdersResponse;
 
       if (!response.ok || !data.success) {
@@ -50,7 +58,13 @@ export default function OrdersPage() {
 
       setOrders(data.orders ?? []);
       setStatus("success");
-      setMessage(data.orders?.length ? "Latest order updates loaded." : "No orders found for this phone number.");
+      setMessage(
+        data.orders?.length
+          ? options?.silent
+            ? "Order status synced with the latest admin updates."
+            : "Latest order updates loaded."
+          : "No orders found for this phone number.",
+      );
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unable to fetch orders.";
       setOrders([]);
@@ -58,6 +72,27 @@ export default function OrdersPage() {
       setMessage(errorMessage);
     }
   }
+
+  async function loadOrders(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const normalizedPhone = phone.trim();
+    setSearchedPhone(normalizedPhone);
+    await loadOrdersByPhone(normalizedPhone);
+  }
+
+  useEffect(() => {
+    if (!searchedPhone) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      void loadOrdersByPhone(searchedPhone, { silent: true });
+    }, 10000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [searchedPhone]);
 
   return (
     <div className="pb-10 pt-10">

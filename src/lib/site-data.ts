@@ -1,3 +1,9 @@
+const whatsappNumber = "923151551704";
+const whatsappMessage = "Hi Sheen Mode,I want to order Ghanal Hair Oil.";
+const instagramUrl = "https://www.instagram.com/sheen.mode19?igsh=NDh3anlybmlybmUy";
+const facebookUrl = process.env.NEXT_PUBLIC_FACEBOOK_URL?.trim() ?? "";
+const contactEmail = "sheenmode19@gmail.com";
+
 export const brand = {
   name: "Sheen Mode",
   productName: "Ghanal Hair Oil",
@@ -12,7 +18,7 @@ export const product = {
   name: "Ghanal Hair Oil",
   price: 2499,
   currency: "PKR",
-  size: "100ml",
+  size: "200ml",
   sku: "SM-GHO-100",
   stock: "Limited stock",
   shortDescription:
@@ -148,7 +154,7 @@ export const faqs = [
   },
   {
     question: "How long does one bottle last?",
-    answer: "A 100ml bottle usually lasts several weeks depending on usage.",
+    answer: "A 200ml bottle usually lasts several weeks depending on usage.",
   },
   {
     question: "Is it chemical free?",
@@ -189,10 +195,10 @@ export const paymentMethods = [
 ] as const;
 
 export const socialLinks = {
-  whatsapp: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ""}`,
-  instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? "",
-  facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "",
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hello@sheenmode.com",
+  whatsapp: whatsappNumber ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}` : "",
+  instagram: instagramUrl,
+  facebook: facebookUrl,
+  email: contactEmail,
 };
 
 export const navigationItems = [

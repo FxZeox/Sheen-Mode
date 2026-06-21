@@ -190,8 +190,10 @@ export default function AdminPage() {
         throw new Error("Status update failed");
       }
 
+      const result = (await response.json()) as { success: boolean; order: AdminOrder };
+
       setOrders((current) =>
-        current.map((order) => (order._id === orderId ? { ...order, status: nextStatus, updatedAt: new Date().toISOString() } : order)),
+        current.map((order) => (order._id === orderId ? { ...order, status: result.order.status, updatedAt: result.order.updatedAt } : order)),
       );
     } catch {
       setOrdersState("error");

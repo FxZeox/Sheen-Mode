@@ -1,5 +1,7 @@
+import { Mail } from "lucide-react";
 import Link from "next/link";
 
+import { InstagramLogo, WhatsAppLogo } from "@/components/social-icons";
 import { brand, socialLinks } from "@/lib/site-data";
 
 export function SiteFooter() {
@@ -12,10 +14,35 @@ export function SiteFooter() {
         </div>
         <div>
           <p className="text-sm font-semibold text-[var(--foreground)]">Contact</p>
-          <div className="mt-4 space-y-2 text-sm text-[var(--muted)]">
-            <p>Email: {socialLinks.email}</p>
-            <p>WhatsApp: {socialLinks.whatsapp ? "Available" : "Add number in .env.local"}</p>
-            <p>Instagram: {socialLinks.instagram ? "Connected" : "Add link in .env.local"}</p>
+          <div className="mt-4 space-y-3 text-sm text-[var(--muted)]">
+            <a
+              href={`mailto:${socialLinks.email}`}
+              className="flex w-fit items-center gap-3 transition hover:text-[var(--foreground)]"
+              aria-label={`Email ${brand.name}`}
+            >
+              <Mail className="h-4 w-4 text-[var(--accent)]" />
+              <span>{socialLinks.email}</span>
+            </a>
+            <a
+              href={socialLinks.whatsapp}
+              target="_blank"
+              rel="noreferrer"
+              className="flex w-fit items-center gap-3 transition hover:text-[var(--foreground)]"
+              aria-label={`Chat with ${brand.name} on WhatsApp`}
+            >
+              <WhatsAppLogo className="h-5 w-5" />
+              <span>WhatsApp</span>
+            </a>
+            <a
+              href={socialLinks.instagram}
+              target="_blank"
+              rel="noreferrer"
+              className="flex w-fit items-center gap-3 transition hover:text-[var(--foreground)]"
+              aria-label={`Visit ${brand.name} on Instagram`}
+            >
+              <InstagramLogo className="h-5 w-5" />
+              <span>Instagram</span>
+            </a>
           </div>
         </div>
         <div className="lg:text-right">

@@ -35,7 +35,9 @@ export default function HomePage() {
               <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-[var(--foreground)] sm:text-5xl lg:text-6xl">
                 {brand.productName}
               </h1>
-              <p className="max-w-2xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">{brand.tagline}. {productContent.shortDescription}</p>
+              <p className="max-w-2xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8" suppressHydrationWarning>
+                {brand.tagline}. {productContent.shortDescription}
+              </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -80,11 +82,11 @@ export default function HomePage() {
               <div className="grid w-full gap-3 sm:grid-cols-2">
                 <div className="rounded-3xl bg-white/80 p-4 text-center shadow-sm">
                   <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]">Bottle Size</p>
-                  <p className="mt-1 text-xl font-semibold">{productContent.size}</p>
+                  <p className="mt-1 text-xl font-semibold" suppressHydrationWarning>{productContent.size}</p>
                 </div>
                 <div className="rounded-3xl bg-white/80 p-4 text-center shadow-sm">
                   <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]">Price</p>
-                  <p className="mt-1 text-xl font-semibold">{formatCurrency.format(productContent.price)}</p>
+                  <p className="mt-1 text-xl font-semibold" suppressHydrationWarning>{formatCurrency.format(productContent.price)}</p>
                 </div>
               </div>
               <button
@@ -137,8 +139,8 @@ export default function HomePage() {
               <Wand2 className="h-5 w-5" />
               <span className="text-sm font-semibold uppercase tracking-[0.3em]">Formula</span>
             </div>
-            <p className="mt-4 text-2xl font-semibold text-[var(--foreground)]">{productContent.shortDescription}</p>
-            <p className="mt-4 max-w-xl text-base leading-8 text-[var(--muted)]">{productContent.longDescription}</p>
+            <p className="mt-4 text-2xl font-semibold text-[var(--foreground)]" suppressHydrationWarning>{productContent.shortDescription}</p>
+            <p className="mt-4 max-w-xl text-base leading-8 text-[var(--muted)]" suppressHydrationWarning>{productContent.longDescription}</p>
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {ingredients.map((ingredient) => (
                 <span key={ingredient} className="rounded-full border border-[var(--border)] bg-[var(--surface-strong)] px-4 py-2 text-sm text-[var(--foreground)]">
@@ -168,17 +170,17 @@ export default function HomePage() {
             <ProductBottle />
           </div>
           <div className="glass-panel soft-shadow rounded-[2rem] p-8">
-            <p className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">{productContent.stock}</p>
-            <h3 className="mt-3 text-3xl font-semibold">{productContent.name}</h3>
+            <p className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]" suppressHydrationWarning>{productContent.stock}</p>
+            <h3 className="mt-3 text-3xl font-semibold" suppressHydrationWarning>{productContent.name}</h3>
             <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-[var(--muted)]">
-              <span className="rounded-full bg-white px-4 py-2">Size {productContent.size}</span>
+              <span className="rounded-full bg-white px-4 py-2" suppressHydrationWarning>Size {productContent.size}</span>
               <span className="rounded-full bg-white px-4 py-2">SKU {product.sku}</span>
             </div>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]">{productContent.longDescription}</p>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]" suppressHydrationWarning>{productContent.longDescription}</p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <div>
                 <p className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">Price</p>
-                <p className="text-3xl font-semibold">{formatCurrency.format(productContent.price)}</p>
+                <p className="text-3xl font-semibold" suppressHydrationWarning>{formatCurrency.format(productContent.price)}</p>
               </div>
               <Link
                 href="/checkout"

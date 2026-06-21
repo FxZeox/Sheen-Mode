@@ -248,7 +248,7 @@ export default function CheckoutPage() {
             <p className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">Order summary</p>
             <div className="mt-5 space-y-3 text-sm">
               <div className="flex items-center justify-between">
-                <span>{productContent.name} x {orderTotals.quantity}</span>
+                <span suppressHydrationWarning>{productContent.name} x {orderTotals.quantity}</span>
                 <span>{formatCurrency.format(orderTotals.subtotal)}</span>
               </div>
               <div className="flex items-center justify-between">

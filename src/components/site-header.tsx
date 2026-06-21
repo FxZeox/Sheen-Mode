@@ -1,9 +1,10 @@
 "use client";
 
 import { Menu, ShoppingCart, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useCart } from "@/components/cart-provider";
 import { brand, navigationItems } from "@/lib/site-data";
@@ -14,22 +15,22 @@ export function SiteHeader() {
   const pathname = usePathname();
   const { totals } = useCart();
   const [currentLogoSrc, setCurrentLogoSrc] = useState(logoSrc);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+  const [menuOpenPath, setMenuOpenPath] = useState<string | null>(null);
+  const menuOpen = menuOpenPath === pathname;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[linear-gradient(180deg,rgba(250,246,239,0.92),rgba(246,241,232,0.88))] backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:py-4 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-0.5 sm:gap-1">
           <span className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden bg-transparent sm:h-[4.5rem] sm:w-[4.5rem]">
-            <img
+            <Image
               src={currentLogoSrc}
               alt="Sheen Mode logo"
-              className="h-14 w-14 object-contain sm:h-[4.5rem] sm:w-[4.5rem]"
-              loading="eager"
+              fill
+              sizes="(min-width: 640px) 4.5rem, 3.5rem"
+              className="object-contain"
+              priority
+              unoptimized
               onError={() => {
                 if (currentLogoSrc !== "/brand/ss-logo.png") {
                   setCurrentLogoSrc("/brand/ss-logo.png");
@@ -71,7 +72,7 @@ export function SiteHeader() {
           </Link>
           <button
             type="button"
-            onClick={() => setMenuOpen(true)}
+            onClick={() => setMenuOpenPath(pathname)}
             aria-label="Open menu"
             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-white text-[var(--foreground)] md:hidden"
           >
@@ -85,7 +86,7 @@ export function SiteHeader() {
           <button
             type="button"
             aria-label="Close menu overlay"
-            onClick={() => setMenuOpen(false)}
+            onClick={() => setMenuOpenPath(null)}
             className="fixed inset-0 z-40 bg-black/25 md:hidden"
           />
           <aside className="fixed right-0 top-0 z-50 h-dvh w-[82%] max-w-xs border-l border-[var(--border)] bg-[var(--surface-strong)] p-5 shadow-2xl md:hidden">
@@ -93,7 +94,7 @@ export function SiteHeader() {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Menu</p>
               <button
                 type="button"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => setMenuOpenPath(null)}
                 aria-label="Close menu"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-white text-[var(--foreground)]"
               >
@@ -109,6 +110,7 @@ export function SiteHeader() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={() => setMenuOpenPath(null)}
                     className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${active ? "bg-[var(--primary)] text-white" : "bg-white text-[var(--foreground)]"}`}
                   >
                     {item.label}

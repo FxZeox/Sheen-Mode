@@ -11,7 +11,6 @@ import "./globals.css";
 
 function resolveSiteUrl() {
   const raw =
-    process.env.NEXT_PUBLIC_SITE_URL ??
     process.env.VERCEL_PROJECT_PRODUCTION_URL ??
     process.env.VERCEL_URL ??
     "http://localhost:3000";
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${bodyFont.variable} ${displayFont.variable} bg-[var(--background)] text-[var(--foreground)] antialiased`}>
         <CartProvider>
           <div className="relative isolate min-h-screen overflow-hidden">

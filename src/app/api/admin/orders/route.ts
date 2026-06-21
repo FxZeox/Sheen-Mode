@@ -5,6 +5,7 @@ import { z } from "zod";
 import { ADMIN_SESSION_COOKIE, verifyAdminSessionToken } from "@/lib/admin-auth";
 import { dbConnect } from "@/lib/mongodb";
 import { Order } from "@/lib/models/order";
+import { dedupeStatusHistory } from "@/lib/order-status";
 
 const updateStatusSchema = z.object({
   orderId: z.string().min(1),
@@ -31,7 +32,12 @@ export async function GET() {
     .select("trackingId customerName phone city address quantity total status paymentMethod deliveryMethod createdAt updatedAt statusHistory")
     .lean();
 
-  return NextResponse.json({ success: true, orders }, { status: 200 });
+  const normalizedOrders = orders.map((order) => ({
+    ...order,
+    statusHistory: dedupeStatusHistory(order.statusHistory),
+  }));
+
+  return NextResponse.json({ success: true, orders: normalizedOrders }, { status: 200 });
 }
 
 export async function PATCH(request: Request) {
@@ -43,26 +49,41 @@ export async function PATCH(request: Request) {
     const payload = updateStatusSchema.parse(await request.json());
 
     await dbConnect();
-    const updated = await Order.findByIdAndUpdate(
-      payload.orderId,
-      {
-        $set: { status: payload.status },
-        $push: {
-          statusHistory: {
-            status: payload.status,
-            note: payload.note,
-            changedAt: new Date(),
-          },
-        },
-      },
-      { new: true },
-    ).lean();
+    const existing = await Order.findById(payload.orderId);
 
-    if (!updated) {
+    if (!existing) {
       return NextResponse.json({ success: false, message: "Order not found." }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, order: updated }, { status: 200 });
+    const currentStatus = existing.status;
+    const normalizedHistory = dedupeStatusHistory(existing.statusHistory ?? []);
+    const hasStatusAlready = normalizedHistory.some((entry) => entry.status === payload.status);
+
+    existing.statusHistory = normalizedHistory;
+    existing.status = payload.status;
+
+    if (currentStatus !== payload.status && !hasStatusAlready) {
+      existing.statusHistory.push({
+        status: payload.status,
+        note: payload.note,
+        changedAt: new Date(),
+      });
+    }
+
+    await existing.save();
+
+    const updatedOrder = existing.toObject();
+
+    return NextResponse.json(
+      {
+        success: true,
+        order: {
+          ...updatedOrder,
+          statusHistory: dedupeStatusHistory(updatedOrder.statusHistory),
+        },
+      },
+      { status: 200 },
+    );
   } catch (error) {
     const message = error instanceof z.ZodError ? error.issues[0]?.message ?? "Invalid input." : "Unable to update order.";
 

@@ -87,7 +87,6 @@ async function terminatePid(pid) {
   for (let i = 0; i < 10; i += 1) {
     try {
       process.kill(pid, 0);
-      // eslint-disable-next-line no-await-in-loop
       await sleep(200);
     } catch {
       return;
@@ -116,7 +115,6 @@ async function stopExistingDevServer() {
 
   for (const pid of pids) {
     console.log(`[dev-server] Stopping existing Next.js dev server (PID ${pid})`);
-    // eslint-disable-next-line no-await-in-loop
     await terminatePid(pid);
   }
 }

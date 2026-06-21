@@ -4,6 +4,7 @@ import { z } from "zod";
 import { calculateTotals } from "@/lib/cart";
 import { dbConnect } from "@/lib/mongodb";
 import { Order } from "@/lib/models/order";
+import { dedupeStatusHistory } from "@/lib/order-status";
 import { ProductSettings } from "@/lib/models/product-settings";
 import { defaultProductContent } from "@/lib/product-content";
 
@@ -52,7 +53,12 @@ export async function GET(request: Request) {
       .select("trackingId customerName phone quantity total status paymentMethod deliveryMethod createdAt updatedAt statusHistory")
       .lean();
 
-    return NextResponse.json({ success: true, orders }, { status: 200 });
+    const normalizedOrders = orders.map((order) => ({
+      ...order,
+      statusHistory: dedupeStatusHistory(order.statusHistory),
+    }));
+
+    return NextResponse.json({ success: true, orders: normalizedOrders }, { status: 200 });
   } catch (error) {
     const message = error instanceof z.ZodError ? error.issues[0]?.message ?? "Invalid query." : "Unable to fetch orders.";
 

@@ -35,14 +35,10 @@ Use these values in `.env.local`:
 
 - `MONGODB_URI`
 - `MONGODB_DB`
-- `NEXT_PUBLIC_SITE_URL`
 - `CLOUDINARY_CLOUD_NAME`
 - `CLOUDINARY_API_KEY`
 - `CLOUDINARY_API_SECRET`
-- `NEXT_PUBLIC_WHATSAPP_NUMBER`
-- `NEXT_PUBLIC_INSTAGRAM_URL`
 - `NEXT_PUBLIC_FACEBOOK_URL`
-- `NEXT_PUBLIC_CONTACT_EMAIL`
 - `NEXT_PUBLIC_BRAND_LOGO`
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD`
@@ -52,10 +48,9 @@ Use these values in `.env.local`:
 
 1. Import this repo into Vercel.
 2. Add all required environment variables from the list above in Project Settings -> Environment Variables.
-3. Set `NEXT_PUBLIC_SITE_URL` to your production domain, for example `https://your-domain.vercel.app`.
-4. Redeploy after updating env vars.
+3. Redeploy after updating env vars.
 
-If `NEXT_PUBLIC_SITE_URL` is not set, the app now falls back to Vercel-provided URL envs automatically.
+The site URL is resolved automatically from Vercel environment variables in production and falls back to `http://localhost:3000` locally.
 
 ## Scripts
 

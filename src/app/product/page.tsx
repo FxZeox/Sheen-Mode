@@ -33,11 +33,11 @@ export default function ProductPage() {
             className="space-y-6"
           >
             <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[var(--accent)]">Product details</p>
-            <h1 className="max-w-xl text-5xl font-semibold tracking-tight sm:text-6xl">{productContent.name}</h1>
-            <p className="max-w-2xl text-lg leading-8 text-[var(--muted)]">{productContent.longDescription}</p>
+            <h1 className="max-w-xl text-5xl font-semibold tracking-tight sm:text-6xl" suppressHydrationWarning>{productContent.name}</h1>
+            <p className="max-w-2xl text-lg leading-8 text-[var(--muted)]" suppressHydrationWarning>{productContent.longDescription}</p>
             <div className="flex flex-wrap gap-3 text-sm text-[var(--muted)]">
-              <span className="rounded-full bg-white/80 px-4 py-2">{productContent.size}</span>
-              <span className="rounded-full bg-white/80 px-4 py-2">{productContent.stock}</span>
+              <span className="rounded-full bg-white/80 px-4 py-2" suppressHydrationWarning>{productContent.size}</span>
+              <span className="rounded-full bg-white/80 px-4 py-2" suppressHydrationWarning>{productContent.stock}</span>
               <span className="rounded-full bg-white/80 px-4 py-2">Homemade formula</span>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
@@ -67,7 +67,7 @@ export default function ProductPage() {
               <div className="space-y-5">
                 <div>
                   <p className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">Price</p>
-                  <p className="mt-2 text-4xl font-semibold">{formatCurrency.format(productContent.price)}</p>
+                  <p className="mt-2 text-4xl font-semibold" suppressHydrationWarning>{formatCurrency.format(productContent.price)}</p>
                 </div>
                 <div>
                   <p className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">Quantity</p>

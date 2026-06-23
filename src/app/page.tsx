@@ -256,7 +256,7 @@ export default function HomePage() {
                 }
                 aspectClassName="aspect-[4/3]"
                 className="rounded-none border-0 bg-[linear-gradient(180deg,rgba(35,69,47,0.04),rgba(156,122,55,0.08))] shadow-none"
-                imageClassName="p-0"
+                imageClassName="object-cover"
               />
               <div className="p-5">
                 <p className="text-lg font-semibold">{item.label}</p>

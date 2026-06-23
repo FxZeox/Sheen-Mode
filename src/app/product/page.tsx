@@ -164,7 +164,7 @@ export default function ProductPage() {
                 }
                 aspectClassName="aspect-[4/3]"
                 className="rounded-none border-0 bg-transparent shadow-none"
-                imageClassName="p-0"
+                imageClassName="object-cover"
               />
             </article>
           ))}

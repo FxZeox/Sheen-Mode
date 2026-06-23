@@ -69,21 +69,22 @@ export function ProductZoomImage({
             setOpen(true);
           }
         }}
-        className={joinClasses("group relative block w-full overflow-hidden rounded-[1.5rem] border border-white/70 bg-white", aspectClassName, className)}
+        className={joinClasses("group relative block w-full overflow-hidden rounded-[1.5rem] border border-white/70 bg-white shadow-[0_18px_50px_rgba(35,69,47,0.08)] transition-transform duration-300 hover:-translate-y-0.5", aspectClassName, className)}
         aria-label={src ? `Zoom ${alt}` : placeholderTitle}
       >
         {src ? (
           <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(156,122,55,0.08),transparent_55%)]" />
             <Image
               src={src}
               alt={alt}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
-              className={joinClasses("object-contain transition duration-300 group-hover:scale-[1.02]", imageClassName)}
+              className={joinClasses("object-contain transition duration-300 ease-out group-hover:scale-[1.08]", imageClassName)}
             />
-            <div className="absolute right-3 top-3 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+            <div className="absolute right-3 top-3 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-xs font-semibold text-white opacity-85 backdrop-blur transition duration-300 group-hover:opacity-100">
               <Maximize2 className="h-3.5 w-3.5" />
-              Zoom
+              Hover to zoom
             </div>
           </>
         ) : fallback ? (

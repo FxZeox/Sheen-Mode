@@ -94,7 +94,7 @@ export default function ProductPage() {
                   fallback={<ProductBottle />}
                   aspectClassName="aspect-[4/5]"
                   className="mx-auto max-w-[320px] sm:max-w-[340px] lg:max-w-[360px]"
-                  imageClassName="p-4"
+                  imageClassName="p-2 sm:p-3"
                 />
               </div>
               <div className="space-y-5">
@@ -164,7 +164,7 @@ export default function ProductPage() {
                 }
                 aspectClassName="aspect-[4/3]"
                 className="rounded-none border-0 bg-transparent shadow-none"
-                imageClassName="p-4"
+                imageClassName="p-2 sm:p-3"
               />
             </article>
           ))}

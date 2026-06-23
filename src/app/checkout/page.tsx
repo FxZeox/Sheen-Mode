@@ -38,7 +38,6 @@ type CheckoutForm = {
   email: string;
   city: string;
   address: string;
-  landmark: string;
   paymentMethod: string;
   notes: string;
 };
@@ -49,7 +48,6 @@ const initialForm: CheckoutForm = {
   email: "",
   city: "",
   address: "",
-  landmark: "",
   paymentMethod: paymentMethods[0],
   notes: "",
 };
@@ -190,15 +188,6 @@ export default function CheckoutPage() {
                 value={form.address}
                 onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))}
                 className="w-full rounded-[1.5rem] border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
-              />
-            </label>
-
-            <label className="mt-4 block space-y-2 text-sm font-medium">
-              Landmark
-              <input
-                value={form.landmark}
-                onChange={(event) => setForm((current) => ({ ...current, landmark: event.target.value }))}
-                className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
               />
             </label>
 

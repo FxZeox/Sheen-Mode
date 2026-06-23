@@ -25,7 +25,6 @@ const orderSchema = z.object({
   email: z.string().email().optional().or(z.literal("")),
   city: z.string().min(2),
   address: z.string().min(8),
-  landmark: z.string().optional().or(z.literal("")),
   quantity: z.number().int().min(1),
   deliveryMethod: z.string().optional().default("normal"),
   paymentMethod: z.string().min(2),

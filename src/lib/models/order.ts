@@ -8,7 +8,6 @@ const orderSchema = new Schema(
     email: { type: String, required: false },
     address: { type: String, required: true },
     city: { type: String, required: true },
-    landmark: { type: String, required: false },
     quantity: { type: Number, required: true, default: 1 },
     deliveryMethod: { type: String, required: true },
     paymentMethod: { type: String, required: true },

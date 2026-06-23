@@ -29,9 +29,7 @@ export async function GET() {
   const orders = await Order.find({})
     .sort({ createdAt: -1 })
     .limit(100)
-    .select(
-      "trackingId customerName phone email city address landmark quantity total status paymentMethod deliveryMethod notes createdAt updatedAt statusHistory",
-    )
+    .select("trackingId customerName phone email city address quantity total status paymentMethod deliveryMethod notes createdAt updatedAt statusHistory")
     .lean();
 
   const normalizedOrders = orders.map((order) => ({

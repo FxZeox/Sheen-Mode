@@ -26,6 +26,19 @@ const productSchema = z.object({
     .default(emptyProductImageUrls),
 });
 
+const imageUrlsSchema = z.object({
+  imageUrls: z
+    .object({
+      frontBottle: z.string().optional().default(""),
+      ingredients: z.string().optional().default(""),
+      lifestyle: z.string().optional().default(""),
+      before: z.string().optional().default(""),
+      middle: z.string().optional().default(""),
+      after: z.string().optional().default(""),
+    })
+    .default(emptyProductImageUrls),
+});
+
 async function isAuthorized() {
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
@@ -72,6 +85,37 @@ export async function PUT(request: Request) {
     return NextResponse.json({ success: true, product: existing }, { status: 200 });
   } catch (error) {
     const message = error instanceof z.ZodError ? error.issues[0]?.message ?? "Invalid input." : "Unable to save product settings.";
+
+    return NextResponse.json({ success: false, message }, { status: 400 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  if (!(await isAuthorized())) {
+    return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
+  }
+
+  try {
+    const payload = imageUrlsSchema.parse(await request.json());
+
+    await dbConnect();
+    const existing = await ProductSettings.findOne({}).sort({ updatedAt: -1 });
+
+    if (!existing) {
+      const created = await ProductSettings.create({
+        ...defaultProductContent,
+        imageUrls: payload.imageUrls,
+      });
+
+      return NextResponse.json({ success: true, product: normalizeProductContent(created.toObject()) }, { status: 200 });
+    }
+
+    existing.imageUrls = payload.imageUrls;
+    await existing.save();
+
+    return NextResponse.json({ success: true, product: normalizeProductContent(existing.toObject()) }, { status: 200 });
+  } catch (error) {
+    const message = error instanceof z.ZodError ? error.issues[0]?.message ?? "Invalid input." : "Unable to save product images.";
 
     return NextResponse.json({ success: false, message }, { status: 400 });
   }

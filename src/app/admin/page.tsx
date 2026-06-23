@@ -264,17 +264,33 @@ export default function AdminPage() {
         throw new Error(data.message ?? "Unable to upload image.");
       }
 
+      const currentImageUrls = {
+        ...form.imageUrls,
+        [field]: data.url,
+      };
+
       setForm((current) => ({
         ...current,
-        imageUrls: {
-          ...current.imageUrls,
-          [field]: data.url,
-        },
+        imageUrls: currentImageUrls,
       }));
+
+      const saveResponse = await fetch("/api/admin/product", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageUrls: currentImageUrls,
+        }),
+      });
+
+      const saveResult = (await saveResponse.json()) as { success: boolean; message?: string };
+
+      if (!saveResponse.ok || !saveResult.success) {
+        throw new Error(saveResult.message ?? "Unable to save uploaded image.");
+      }
 
       setImageStatus({
         field,
-        message: `${config.label} uploaded successfully.`,
+        message: `${config.label} uploaded and saved.`,
         error: "",
       });
     } catch (error) {

@@ -107,7 +107,7 @@ export default function HomePage() {
                 fallback={<ProductBottle />}
                 aspectClassName="aspect-[4/5]"
                 className="mx-auto max-w-[320px] sm:max-w-[340px] lg:max-w-[360px]"
-                imageClassName="p-2 sm:p-3"
+                imageClassName="p-0"
               />
               <div className="grid w-full gap-3 sm:grid-cols-2">
                 <div className="rounded-3xl bg-white/80 p-4 text-center shadow-sm">
@@ -205,7 +205,7 @@ export default function HomePage() {
               fallback={<ProductBottle />}
               aspectClassName="aspect-[4/5]"
               className="mx-auto max-w-[320px] sm:max-w-[340px] lg:max-w-[360px]"
-              imageClassName="p-2 sm:p-3"
+              imageClassName="p-0"
             />
           </div>
           <div className="glass-panel soft-shadow rounded-[2rem] p-8">
@@ -256,7 +256,7 @@ export default function HomePage() {
                 }
                 aspectClassName="aspect-[4/3]"
                 className="rounded-none border-0 bg-[linear-gradient(180deg,rgba(35,69,47,0.04),rgba(156,122,55,0.08))] shadow-none"
-                imageClassName="p-2 sm:p-3"
+                imageClassName="p-0"
               />
               <div className="p-5">
                 <p className="text-lg font-semibold">{item.label}</p>

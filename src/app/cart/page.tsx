@@ -10,7 +10,7 @@ import { deliveryOptions } from "@/lib/site-data";
 import { useProductContent } from "@/lib/use-product-content";
 
 export default function CartPage() {
-  const { state, setQuantity, setDeliveryMethod, clearCart } = useCart();
+  const { state, setQuantity, clearCart } = useCart();
   const productContent = useProductContent();
   const liveTotals = calculateTotals({
     quantity: state.quantity,
@@ -51,24 +51,18 @@ export default function CartPage() {
               </div>
             </div>
 
-            <div className="mt-6">
-              <p className="font-semibold">Delivery method</p>
-              <div className="mt-4 grid gap-3">
-                {deliveryOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => setDeliveryMethod(option.id)}
-                    className={`flex items-center justify-between rounded-[1.5rem] border px-4 py-4 text-left transition ${state.deliveryMethod === option.id ? "border-[var(--primary)] bg-white shadow-lg shadow-[#23452f]/10" : "border-[var(--border)] bg-white/70"}`}
-                  >
-                    <span>
-                      <span className="block font-semibold text-[var(--foreground)]">{option.label}</span>
-                      <span className="block text-sm text-[var(--muted)]">{option.eta}</span>
-                    </span>
-                    <span className="text-sm font-semibold">{formatCurrency.format(option.fee)}</span>
-                  </button>
-                ))}
+            <div className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-white/70 p-5">
+              <p className="text-sm uppercase tracking-[0.25em] text-[var(--accent)]">Delivery</p>
+              <div className="mt-3 flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-[var(--foreground)]">{deliveryOptions[0].label}</p>
+                  <p className="text-sm text-[var(--muted)]">{deliveryOptions[0].eta}</p>
+                </div>
+                <p className="text-sm font-semibold">{formatCurrency.format(deliveryOptions[0].fee)}</p>
               </div>
+              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+                Delivery is PKR 400 for Cash on Delivery and PKR 350 for online payment. The final amount updates in checkout.
+              </p>
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -107,7 +101,7 @@ export default function CartPage() {
                 <Truck className="h-5 w-5" />
                 <span className="font-semibold">Delivery note</span>
               </div>
-              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">The delivery fee is applied automatically based on the selected method. Use this area for real city-based shipping rules later.</p>
+              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">Normal delivery is the only shipping option now, and the charge changes based on payment method at checkout.</p>
             </div>
             {state.quantity === 0 ? <p className="mt-4 text-sm text-[var(--muted)]">Your cart is empty. Add quantity to continue checkout.</p> : null}
           </aside>

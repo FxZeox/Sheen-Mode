@@ -20,7 +20,7 @@ export const product = {
   currency: "PKR",
   size: "200ml",
   sku: "SM-GHO-100",
-  stock: "Limited stock",
+  stock: "Available now",
   shortDescription:
     "A lightweight, herbal blend for scalp nourishment, shine, and healthy-looking hair.",
   longDescription:
@@ -168,22 +168,10 @@ export const faqs = [
 
 export const deliveryOptions = [
   {
-    id: "standard",
-    label: "Standard Delivery",
-    fee: 250,
-    eta: "3-5 business days",
-  },
-  {
-    id: "express",
-    label: "Express Delivery",
-    fee: 450,
-    eta: "1-2 business days",
-  },
-  {
-    id: "pickup",
-    label: "Local Pickup",
-    fee: 0,
-    eta: "Same day confirmation",
+    id: "normal",
+    label: "Normal Delivery",
+    fee: 400,
+    eta: "Charge updates based on payment method",
   },
 ] as const;
 

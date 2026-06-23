@@ -27,7 +27,7 @@ const orderSchema = z.object({
   address: z.string().min(8),
   landmark: z.string().optional().or(z.literal("")),
   quantity: z.number().int().min(1),
-  deliveryMethod: z.enum(["standard", "express", "pickup"]),
+  deliveryMethod: z.string().optional().default("normal"),
   paymentMethod: z.string().min(2),
   notes: z.string().optional().default(""),
 });
@@ -73,7 +73,8 @@ export async function POST(request: Request) {
     const productSettings = await ProductSettings.findOne({}).sort({ updatedAt: -1 }).lean();
     const totals = calculateTotals({
       quantity: payload.quantity,
-      deliveryMethod: payload.deliveryMethod,
+      deliveryMethod: "normal",
+      paymentMethod: payload.paymentMethod,
       unitPrice: productSettings?.price ?? defaultProductContent.price,
     });
 
@@ -81,6 +82,7 @@ export async function POST(request: Request) {
     const createdOrder = await Order.create({
       ...payload,
       trackingId,
+      deliveryMethod: "normal",
       subtotal: totals.subtotal,
       couponDiscount: totals.couponDiscount,
       couponCode: "",

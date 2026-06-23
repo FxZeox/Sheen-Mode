@@ -7,7 +7,7 @@ import { Section } from "@/components/section";
 import { useCart } from "@/components/cart-provider";
 import { WhatsAppLogo } from "@/components/social-icons";
 import { calculateTotals, formatCurrency } from "@/lib/cart";
-import { deliveryOptions, paymentMethods } from "@/lib/site-data";
+import { paymentMethods } from "@/lib/site-data";
 import { useProductContent } from "@/lib/use-product-content";
 
 type TrackedOrder = {
@@ -66,6 +66,7 @@ export default function CheckoutPage() {
   const orderTotals = calculateTotals({
     quantity: state.quantity,
     deliveryMethod: state.deliveryMethod,
+    paymentMethod: form.paymentMethod,
     unitPrice: productContent.price,
   });
 
@@ -262,10 +263,10 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="mt-6 space-y-4 rounded-[1.5rem] bg-white/80 p-5 text-sm text-[var(--muted)]">
+            <div className="mt-6 space-y-4 rounded-[1.5rem] bg-white/80 p-5 text-sm text-[var(--muted)]" suppressHydrationWarning>
               <p className="flex items-center gap-3 text-[var(--foreground)]"><MapPin className="h-4 w-4 text-[var(--primary)]" /> Delivery method is applied automatically.</p>
-              <p className="flex items-center gap-3 text-[var(--foreground)]"><WhatsAppLogo className="h-5 w-5 shrink-0" /> If you pay online, place your order first and then contact us on WhatsApp to get the account number for payment.</p>
-              <p className="flex items-center gap-3 text-[var(--foreground)]"><CreditCard className="h-4 w-4 text-[var(--primary)]" /> Supported payment methods are listed in this checkout.</p>
+              <p className="flex items-center gap-3 text-[var(--foreground)]"><WhatsAppLogo className="h-5 w-5 shrink-0" /> Online payment keeps delivery at PKR 350, while Cash on Delivery uses PKR 400.</p>
+              <p className="flex items-center gap-3 text-[var(--foreground)]"><CreditCard className="h-4 w-4 text-[var(--primary)]" /> Choose your payment method to see the final delivery charge update automatically.</p>
               <p className="flex items-center gap-3 text-[var(--foreground)]"><CheckCircle2 className="h-4 w-4 text-[var(--primary)]" /> Admin can review and update orders from the dashboard.</p>
             </div>
 

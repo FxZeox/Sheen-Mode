@@ -7,8 +7,9 @@ import { ArrowRight, BadgeCheck, Clock3, Package2, ShoppingCart, Truck } from "l
 import { ProductBottle } from "@/components/product-bottle";
 import { Section } from "@/components/section";
 import { useCart } from "@/components/cart-provider";
+import { ProductZoomImage } from "@/components/product-zoom-image";
 import { formatCurrency } from "@/lib/cart";
-import { gallery, ingredientBenefits, paymentMethods } from "@/lib/site-data";
+import { ingredientBenefits, paymentMethods } from "@/lib/site-data";
 import { useProductContent } from "@/lib/use-product-content";
 
 const usageSteps = [
@@ -21,6 +22,29 @@ const usageSteps = [
 export default function ProductPage() {
   const { state, setQuantity, addToCart } = useCart();
   const productContent = useProductContent();
+  const galleryCards = [
+    {
+      key: "frontBottle",
+      label: "Front Bottle",
+      description: "Main bottle photo for the product hero.",
+      src: productContent.imageUrls.frontBottle,
+      accent: "from-[#34583e] to-[#1f3525]",
+    },
+    {
+      key: "ingredients",
+      label: "Ingredients",
+      description: "A clean ingredient or flat lay shot.",
+      src: productContent.imageUrls.ingredients,
+      accent: "from-[#866b3f] to-[#5d4521]",
+    },
+    {
+      key: "lifestyle",
+      label: "Lifestyle",
+      description: "Real product-in-use or packaging photo.",
+      src: productContent.imageUrls.lifestyle,
+      accent: "from-[#c6b28a] to-[#92754c]",
+    },
+  ] as const;
 
   return (
     <div className="pb-10">
@@ -62,7 +86,16 @@ export default function ProductPage() {
           >
             <div className="grid gap-6 md:grid-cols-[0.9fr_1.1fr]">
               <div className="rounded-[1.75rem] bg-[linear-gradient(180deg,rgba(35,69,47,0.04),rgba(156,122,55,0.08))] p-4">
-                <ProductBottle />
+                <ProductZoomImage
+                  src={productContent.imageUrls.frontBottle}
+                  alt={`${productContent.name} main product image`}
+                  placeholderTitle="Upload the main product image in admin"
+                  placeholderDescription="This hero image appears on the home and product pages, and customers can zoom it open."
+                  fallback={<ProductBottle />}
+                  aspectClassName="aspect-[4/5]"
+                  className="mx-auto max-w-[320px] sm:max-w-[340px] lg:max-w-[360px]"
+                  imageClassName="p-4"
+                />
               </div>
               <div className="space-y-5">
                 <div>
@@ -114,13 +147,25 @@ export default function ProductPage() {
 
       <Section eyebrow="Gallery" title="Use premium visuals for the bottle, ingredients, and packaging">
         <div className="grid gap-5 md:grid-cols-3">
-          {gallery.map((item) => (
-            <article key={item.title} className="overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/70 shadow-[0_24px_70px_rgba(35,69,47,0.08)]">
-              <div className={`h-56 bg-gradient-to-br ${item.accent}`} />
-              <div className="p-5">
-                <p className="text-lg font-semibold">{item.title}</p>
-                <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{item.description}</p>
-              </div>
+          {galleryCards.map((item) => (
+            <article key={item.key} className="overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/70 shadow-[0_24px_70px_rgba(35,69,47,0.08)]">
+              <ProductZoomImage
+                src={item.src}
+                alt={item.label}
+                placeholderTitle={`Upload ${item.label.toLowerCase()} image in admin`}
+                placeholderDescription="This image can be opened in a larger view."
+                fallback={
+                  <div className={`flex h-full items-center justify-center bg-gradient-to-br ${item.accent} px-4 text-center`}>
+                    <div className="max-w-xs rounded-[1.5rem] border border-white/20 bg-white/10 px-5 py-6 text-white backdrop-blur-sm">
+                      <p className="text-lg font-semibold">{item.label}</p>
+                      <p className="mt-2 text-sm leading-6 text-white/80">{item.description}</p>
+                    </div>
+                  </div>
+                }
+                aspectClassName="aspect-[4/3]"
+                className="rounded-none border-0 bg-transparent shadow-none"
+                imageClassName="p-4"
+              />
             </article>
           ))}
         </div>
@@ -144,7 +189,8 @@ export default function ProductPage() {
               <span className="text-sm font-semibold uppercase tracking-[0.3em]">Shipping & payment</span>
             </div>
             <div className="mt-5 space-y-4 text-sm text-[var(--muted)]">
-              <p>Delivery methods are shown during checkout and the shipping fee updates automatically.</p>
+              <p>Normal delivery is the only shipping option now, and the fee changes by payment method.</p>
+              <p>Cash on Delivery is PKR 400. Online payment methods are PKR 350.</p>
               <p>Recommended payment methods: {paymentMethods.join(", ")}.</p>
               <p>Order and delivery details are shown during checkout with a clear final total.</p>
             </div>

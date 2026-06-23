@@ -8,6 +8,14 @@ const productSettingsSchema = new Schema(
     shortDescription: { type: String, required: true },
     longDescription: { type: String, required: true },
     stock: { type: String, required: true },
+    imageUrls: {
+      frontBottle: { type: String, default: "" },
+      ingredients: { type: String, default: "" },
+      lifestyle: { type: String, default: "" },
+      before: { type: String, default: "" },
+      middle: { type: String, default: "" },
+      after: { type: String, default: "" },
+    },
   },
   {
     timestamps: true,

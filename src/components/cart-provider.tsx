@@ -39,9 +39,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       if (stored) {
         const parsed = JSON.parse(stored) as Partial<CartState>;
+        const deliveryMethod = parsed.deliveryMethod;
         setState({
           quantity: Math.max(0, parsed.quantity ?? defaultState.quantity),
-          deliveryMethod: parsed.deliveryMethod ?? defaultState.deliveryMethod,
+          deliveryMethod: deliveryMethod === deliveryOptions[0].id ? deliveryMethod : defaultState.deliveryMethod,
         });
       }
     } catch {

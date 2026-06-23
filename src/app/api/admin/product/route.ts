@@ -5,7 +5,7 @@ import { z } from "zod";
 import { ADMIN_SESSION_COOKIE, verifyAdminSessionToken } from "@/lib/admin-auth";
 import { dbConnect } from "@/lib/mongodb";
 import { ProductSettings } from "@/lib/models/product-settings";
-import { defaultProductContent } from "@/lib/product-content";
+import { defaultProductContent, emptyProductImageUrls, normalizeProductContent } from "@/lib/product-content";
 
 const productSchema = z.object({
   name: z.string().min(2),
@@ -14,6 +14,16 @@ const productSchema = z.object({
   shortDescription: z.string().min(10),
   longDescription: z.string().min(20),
   stock: z.string().min(2),
+  imageUrls: z
+    .object({
+      frontBottle: z.string().optional().default(""),
+      ingredients: z.string().optional().default(""),
+      lifestyle: z.string().optional().default(""),
+      before: z.string().optional().default(""),
+      middle: z.string().optional().default(""),
+      after: z.string().optional().default(""),
+    })
+    .default(emptyProductImageUrls),
 });
 
 async function isAuthorized() {
@@ -31,7 +41,7 @@ export async function GET() {
   await dbConnect();
   const settings = await ProductSettings.findOne({}).sort({ updatedAt: -1 }).lean();
 
-  return NextResponse.json({ success: true, product: settings ?? defaultProductContent }, { status: 200 });
+  return NextResponse.json({ success: true, product: normalizeProductContent(settings ?? defaultProductContent) }, { status: 200 });
 }
 
 export async function PUT(request: Request) {
@@ -56,6 +66,7 @@ export async function PUT(request: Request) {
     existing.shortDescription = payload.shortDescription;
     existing.longDescription = payload.longDescription;
     existing.stock = payload.stock;
+    existing.imageUrls = payload.imageUrls;
     await existing.save();
 
     return NextResponse.json({ success: true, product: existing }, { status: 200 });

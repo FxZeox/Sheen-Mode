@@ -1,11 +1,53 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, LogOut, PencilLine } from "lucide-react";
+import { Eye, EyeOff, ImageUp, LogOut, PencilLine, Trash2, Upload } from "lucide-react";
 
 import { Section } from "@/components/section";
 import { formatCurrency } from "@/lib/cart";
-import { defaultProductContent } from "@/lib/product-content";
+import { defaultProductContent, emptyProductImageUrls, normalizeProductContent, type ProductImageUrls } from "@/lib/product-content";
+
+type ImageFieldKey = keyof ProductImageUrls;
+
+const imageFieldConfigs = [
+  {
+    key: "frontBottle",
+    label: "Main product image",
+    description: "Hero shot shown on the home and product pages.",
+    folder: "sheen-mode/product-images/front-bottle",
+  },
+  {
+    key: "ingredients",
+    label: "Ingredients",
+    description: "Flat lay or ingredient showcase image.",
+    folder: "sheen-mode/product-images/ingredients",
+  },
+  {
+    key: "lifestyle",
+    label: "Lifestyle",
+    description: "Use a real in-use or model photo.",
+    folder: "sheen-mode/product-images/lifestyle",
+  },
+  {
+    key: "before",
+    label: "Before",
+    description: "Before-use hair image.",
+    folder: "sheen-mode/product-images/before",
+  },
+  {
+    key: "middle",
+    label: "During",
+    description: "Midway progress image for the home page.",
+    folder: "sheen-mode/product-images/middle",
+  },
+  {
+    key: "after",
+    label: "After",
+    description: "After-use result image.",
+    folder: "sheen-mode/product-images/after",
+  },
+] as const;
 
 type ProductForm = {
   name: string;
@@ -14,6 +56,7 @@ type ProductForm = {
   shortDescription: string;
   description: string;
   stock: string;
+  imageUrls: ProductImageUrls;
 };
 
 const initialProductForm: ProductForm = {
@@ -23,6 +66,7 @@ const initialProductForm: ProductForm = {
   shortDescription: defaultProductContent.shortDescription,
   description: defaultProductContent.longDescription,
   stock: defaultProductContent.stock,
+  imageUrls: emptyProductImageUrls,
 };
 
 type AdminOrder = {
@@ -30,13 +74,16 @@ type AdminOrder = {
   trackingId: string;
   customerName: string;
   phone: string;
+  email?: string;
   city: string;
   address: string;
+  landmark?: string;
   quantity: number;
   total: number;
   status: string;
   paymentMethod: string;
   deliveryMethod: string;
+  notes?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -53,6 +100,11 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [status, setStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
   const [ordersState, setOrdersState] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [imageStatus, setImageStatus] = useState<{ field: ImageFieldKey | null; message: string; error: string }>({
+    field: null,
+    message: "",
+    error: "",
+  });
 
   useEffect(() => {
     async function checkSession() {
@@ -94,11 +146,20 @@ export default function AdminPage() {
           shortDescription: string;
           longDescription: string;
           stock: string;
+          imageUrls?: Partial<ProductImageUrls>;
         };
       };
       const ordersResult = (await ordersResponse.json()) as { success: boolean; orders: AdminOrder[] };
 
       if (productResult.success) {
+        const product = normalizeProductContent({
+          ...productResult.product,
+          imageUrls: {
+            ...emptyProductImageUrls,
+            ...(productResult.product.imageUrls ?? {}),
+          },
+        });
+
         setForm({
           name: productResult.product.name,
           price: String(productResult.product.price),
@@ -106,6 +167,7 @@ export default function AdminPage() {
           shortDescription: productResult.product.shortDescription,
           description: productResult.product.longDescription,
           stock: productResult.product.stock,
+          imageUrls: product.imageUrls,
         });
       }
 
@@ -165,6 +227,7 @@ export default function AdminPage() {
           shortDescription: form.shortDescription,
           longDescription: form.description,
           stock: form.stock,
+          imageUrls: form.imageUrls,
         }),
       });
 
@@ -175,6 +238,56 @@ export default function AdminPage() {
       setStatus("done");
     } catch {
       setStatus("error");
+    }
+  }
+
+  async function uploadProductImage(field: ImageFieldKey, file: File) {
+    const config = imageFieldConfigs.find((item) => item.key === field);
+
+    if (!config) {
+      return;
+    }
+
+    setImageStatus({ field, message: "", error: "" });
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", config.folder);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = (await response.json()) as { success: boolean; url?: string; message?: string };
+
+      if (!response.ok || !data.success || !data.url) {
+        throw new Error(data.message ?? "Unable to upload image.");
+      }
+
+      setForm((current) => ({
+        ...current,
+        imageUrls: {
+          ...current.imageUrls,
+          [field]: data.url,
+        },
+      }));
+
+      setImageStatus({
+        field,
+        message: `${config.label} uploaded successfully.`,
+        error: "",
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to upload image.";
+      setImageStatus({
+        field,
+        message: "",
+        error: message,
+      });
+    } finally {
+      setImageStatus((current) => (current.field === field ? current : { field: null, message: "", error: "" }));
     }
   }
 
@@ -314,6 +427,89 @@ export default function AdminPage() {
                 Description
                 <textarea value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} rows={5} className="w-full rounded-[1.5rem] border border-[var(--border)] bg-white px-4 py-3 outline-none" />
               </label>
+              <div className="mt-6">
+                <div className="flex items-center gap-3 text-[var(--primary)]">
+                  <ImageUp className="h-5 w-5" />
+                  <h3 className="text-xl font-semibold">Product images</h3>
+                </div>
+                <p className="mt-2 text-sm text-[var(--muted)]">
+                  Upload the real bottle, ingredient, lifestyle, and progress photos. Each upload goes straight to Cloudinary and is saved with the product record.
+                </p>
+
+                <div className="mt-5 grid gap-4 md:grid-cols-2">
+                  {imageFieldConfigs.map((config) => {
+                    const previewUrl = form.imageUrls[config.key];
+                    const isCurrentField = imageStatus.field === config.key;
+
+                    return (
+                      <div key={config.key} className="rounded-[1.5rem] border border-[var(--border)] bg-white p-4">
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-[1.1rem] bg-[var(--background)]">
+                          {previewUrl ? (
+                            <Image src={previewUrl} alt={config.label} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                          ) : (
+                            <div className="flex h-full items-center justify-center px-4 text-center text-sm text-[var(--muted)]">
+                              No image uploaded yet
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mt-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-[var(--foreground)]">{config.label}</p>
+                              <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{config.description}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setForm((current) => ({
+                                  ...current,
+                                  imageUrls: {
+                                    ...current.imageUrls,
+                                    [config.key]: "",
+                                  },
+                                }))
+                              }
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-white text-[var(--muted)]"
+                              aria-label={`Clear ${config.label}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+
+                          <div className="mt-4 flex flex-wrap items-center gap-3">
+                            <label
+                              htmlFor={`image-${config.key}`}
+                              className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white"
+                            >
+                              <Upload className="h-4 w-4" />
+                              {previewUrl ? "Replace image" : "Upload image"}
+                            </label>
+                            <input
+                              id={`image-${config.key}`}
+                              type="file"
+                              accept="image/*"
+                              className="sr-only"
+                              onChange={(event) => {
+                                const file = event.currentTarget.files?.[0];
+
+                                if (file) {
+                                  void uploadProductImage(config.key, file);
+                                }
+
+                                event.currentTarget.value = "";
+                              }}
+                            />
+                          </div>
+
+                          {isCurrentField && imageStatus.message ? <p className="mt-3 text-sm text-emerald-700">{imageStatus.message}</p> : null}
+                          {isCurrentField && imageStatus.error ? <p className="mt-3 text-sm text-red-600">{imageStatus.error}</p> : null}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
               <div className="mt-6 flex items-center gap-4">
                 <button type="submit" className="rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-white">
                   {status === "saving" ? "Saving..." : "Save changes"}
@@ -363,9 +559,46 @@ export default function AdminPage() {
                       <p className="text-sm font-semibold">{formatCurrency.format(order.total)}</p>
                     </div>
 
-                    <p className="mt-3 text-sm text-[var(--muted)]">{order.address}</p>
-                    <p className="mt-2 text-sm text-[var(--muted)]">Qty {order.quantity} | {order.deliveryMethod} | {order.paymentMethod}</p>
-                    <p className="mt-2 text-xs text-[var(--muted)]">Placed {new Date(order.createdAt).toLocaleString()}</p>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Email</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.email?.trim() ? order.email : "Not provided"}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Phone</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.phone}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">City</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.city}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3 sm:col-span-2 lg:col-span-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Address</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.address}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Landmark</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.landmark?.trim() ? order.landmark : "Not provided"}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Quantity</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.quantity}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Payment</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.paymentMethod}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Delivery</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.deliveryMethod}</p>
+                      </div>
+                      <div className="rounded-[1.1rem] bg-[var(--background)] px-4 py-3 sm:col-span-2 lg:col-span-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-[var(--accent)]">Notes</p>
+                        <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{order.notes?.trim() ? order.notes : "No notes"}</p>
+                      </div>
+                    </div>
+
+                    <p className="mt-3 text-xs text-[var(--muted)]">Placed {new Date(order.createdAt).toLocaleString()}</p>
 
                     <div className="mt-4 flex flex-wrap items-center gap-3">
                       <label className="text-sm font-medium">Status</label>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { defaultProductContent, type ProductContent } from "@/lib/product-content";
+import { defaultProductContent, normalizeProductContent, type ProductContent } from "@/lib/product-content";
 
 type ProductApiResponse = {
   success: boolean;
@@ -29,11 +29,13 @@ export function useProductContent() {
           return;
         }
 
-        setProductContent({
-          ...defaultProductContent,
-          ...data.product,
-          price: Number(data.product.price ?? defaultProductContent.price),
-        });
+        setProductContent(
+          normalizeProductContent({
+            ...defaultProductContent,
+            ...data.product,
+            price: Number(data.product.price ?? defaultProductContent.price),
+          }),
+        );
       } catch {
         // Keep static fallback data when API is unavailable.
       }

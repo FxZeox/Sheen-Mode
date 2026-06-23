@@ -6,6 +6,7 @@ import { ArrowRight, CheckCircle2, Sparkles, Star, Truck, Wand2 } from "lucide-r
 
 import { ProductBottle } from "@/components/product-bottle";
 import { Section } from "@/components/section";
+import { ProductZoomImage } from "@/components/product-zoom-image";
 import { useCart } from "@/components/cart-provider";
 import { benefits, brand, ingredientBenefits, ingredients, product, testimonials } from "@/lib/site-data";
 import { formatCurrency } from "@/lib/cart";
@@ -14,6 +15,26 @@ import { useProductContent } from "@/lib/use-product-content";
 export default function HomePage() {
   const { addToCart } = useCart();
   const productContent = useProductContent();
+  const progressImages = [
+    {
+      key: "before",
+      label: "Before",
+      description: "Dry scalp and weak-looking strands",
+      src: productContent.imageUrls.before,
+    },
+    {
+      key: "middle",
+      label: "During",
+      description: "A healthier routine over a few weeks",
+      src: productContent.imageUrls.middle,
+    },
+    {
+      key: "after",
+      label: "After",
+      description: "Softer shine and improved hair feel",
+      src: productContent.imageUrls.after,
+    },
+  ];
 
   return (
     <div>
@@ -78,7 +99,16 @@ export default function HomePage() {
           >
             <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,rgba(156,122,55,0.14),transparent_50%)]" />
             <div className="relative flex flex-col items-center gap-6">
-              <ProductBottle />
+              <ProductZoomImage
+                src={productContent.imageUrls.frontBottle}
+                alt={`${productContent.name} main product image`}
+                placeholderTitle="Upload the main product image in admin"
+                placeholderDescription="This hero image appears on the home and product pages, and customers can zoom it open."
+                fallback={<ProductBottle />}
+                aspectClassName="aspect-[4/5]"
+                className="mx-auto max-w-[320px] sm:max-w-[340px] lg:max-w-[360px]"
+                imageClassName="p-4"
+              />
               <div className="grid w-full gap-3 sm:grid-cols-2">
                 <div className="rounded-3xl bg-white/80 p-4 text-center shadow-sm">
                   <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]">Bottle Size</p>
@@ -167,7 +197,16 @@ export default function HomePage() {
       >
         <div className="grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:items-start">
           <div className="rounded-[2rem] border border-white/70 bg-white/70 p-6 shadow-[0_24px_70px_rgba(35,69,47,0.08)]">
-            <ProductBottle />
+            <ProductZoomImage
+              src={productContent.imageUrls.frontBottle}
+              alt={`${productContent.name} main product image`}
+              placeholderTitle="Upload the main product image in admin"
+              placeholderDescription="The same image appears on the product page and opens in a larger view."
+              fallback={<ProductBottle />}
+              aspectClassName="aspect-[4/5]"
+              className="mx-auto max-w-[320px] sm:max-w-[340px] lg:max-w-[360px]"
+              imageClassName="p-4"
+            />
           </div>
           <div className="glass-panel soft-shadow rounded-[2rem] p-8">
             <p className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]" suppressHydrationWarning>{productContent.stock}</p>
@@ -196,20 +235,31 @@ export default function HomePage() {
 
       <Section
         eyebrow="Before & after"
-        title="Reserve space for transformation content"
-        description="These cards are ready for customer results, progress photos, and visual proof later."
+        title="Show real progress photos from the home page"
+        description="Upload before, during, and after images in the admin dashboard and they will appear here."
       >
         <div className="grid gap-5 md:grid-cols-3">
-          {[
-            ["Before", "Dry scalp and weak-looking strands", "from-[#d4c1a1] to-[#ac8e63]"],
-            ["During", "A healthier routine over a few weeks", "from-[#8a9c80] to-[#567054]"],
-            ["After", "Softer shine and improved hair feel", "from-[#f0dfb6] to-[#c3a05a]"],
-          ].map(([title, caption, accent]) => (
-            <div key={title} className="overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/70 shadow-[0_20px_60px_rgba(35,69,47,0.08)]">
-              <div className={`h-56 bg-gradient-to-br ${accent}`} />
+          {progressImages.map((item) => (
+            <div key={item.key} className="overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/70 shadow-[0_20px_60px_rgba(35,69,47,0.08)]">
+              <ProductZoomImage
+                src={item.src}
+                alt={item.label}
+                placeholderTitle={`Upload ${item.label.toLowerCase()} image in admin`}
+                placeholderDescription="This image can be opened in a larger view."
+                fallback={
+                  <div className="flex h-full items-center justify-center bg-[linear-gradient(180deg,rgba(35,69,47,0.04),rgba(156,122,55,0.08))] px-4 text-center">
+                    <div>
+                      <p className="text-xl font-semibold text-[var(--foreground)]">{item.label}</p>
+                      <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{item.description}</p>
+                    </div>
+                  </div>
+                }
+                aspectClassName="aspect-[4/3]"
+                className="rounded-none border-0 bg-[linear-gradient(180deg,rgba(35,69,47,0.04),rgba(156,122,55,0.08))] shadow-none"
+              />
               <div className="p-5">
-                <p className="text-lg font-semibold">{title}</p>
-                <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{caption}</p>
+                <p className="text-lg font-semibold">{item.label}</p>
+                <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{item.description}</p>
               </div>
             </div>
           ))}

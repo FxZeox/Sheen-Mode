@@ -132,7 +132,7 @@ export default function ProductPage() {
                     Add to Cart
                   </button>
                   <Link
-                    href="/product"
+                    href="/checkout"
                     className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[var(--primary)]/15 bg-white px-5 py-3 text-sm font-semibold text-[var(--primary)]"
                   >
                     Buy Now

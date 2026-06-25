@@ -63,7 +63,7 @@ export default function HomePage() {
 
             <div className="flex flex-wrap items-center gap-4">
               <Link
-                href="/checkout"
+                href="/product"
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-medium text-white shadow-lg shadow-[#23452f]/20 transition hover:-translate-y-0.5 hover:bg-[#1d3826]"
               >
                 Buy Now
@@ -222,7 +222,7 @@ export default function HomePage() {
                 <p className="text-3xl font-semibold" suppressHydrationWarning>{formatCurrency.format(productContent.price)}</p>
               </div>
               <Link
-                href="/checkout"
+                href="/product"
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#1d3826]"
               >
                 Order Now

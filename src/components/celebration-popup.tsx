@@ -142,7 +142,7 @@ export function CelebrationPopup() {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/checkout"
+              href="/product"
               onClick={() => setOpen(false)}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1d3826]"
             >
